@@ -30,7 +30,15 @@ No manual work. No copy-pasting. Just one sentence.
 
 ---
 
-## Setup (3 steps, ~5 minutes)
+## Prerequisites
+
+- [Claude Desktop](https://claude.ai/download) — download and install
+- [Node.js 18+](https://nodejs.org) — for running the MCP server
+- [Notion account](https://notion.so) — free
+
+---
+
+## Setup (4 steps, ~5 minutes)
 
 ### Step 1 — Get free keys
 
@@ -42,7 +50,7 @@ No manual work. No copy-pasting. Just one sentence.
 **Connect Notion to your page:**
 Open any Notion page → `...` → Connections → add your integration
 
-**Get your Notion Page ID:**
+**Get your Notion Page ID from URL:**
 ```
 https://notion.so/My-Page-abc123def456  →  Page ID = abc123def456
 ```
@@ -69,7 +77,11 @@ which node
 
 ### Step 3 — Configure Claude Desktop
 
-Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
+Find the config file:
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+Edit it:
 
 ```json
 {
@@ -88,10 +100,20 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 }
 ```
 
-Restart Claude Desktop:
+> **Tip:** To get the absolute path of `index.js`, drag the file into Terminal — it pastes the full path automatically.
+
+---
+
+### Step 4 — Restart Claude Desktop
+
 ```bash
+# macOS
 pkill -f Claude && sleep 2 && open /Applications/Claude.app
 ```
+
+On Windows — quit from the system tray and reopen.
+
+Look for the 🔨 hammer icon in the chat box — that means MCP is connected.
 
 ✅ **No Docker. No `.env` file. No local backend needed.**
 
@@ -179,11 +201,11 @@ curl https://scrapyforge-production.up.railway.app/api/health
 # 1. Get your full node path
 which node
 
-# 2. Use it in "command" field — not just "node"
-# Wrong:  "command": "node"
-# Right:  "command": "/usr/local/bin/node"
+# 2. Use FULL path in "command" — not just "node"
+# ❌ Wrong:  "command": "node"
+# ✅ Right:  "command": "/usr/local/bin/node"
 
-# 3. Restart Claude Desktop
+# 3. Restart Claude Desktop fully (Cmd+Q not just close)
 pkill -f Claude && open /Applications/Claude.app
 ```
 
@@ -191,15 +213,22 @@ pkill -f Claude && open /Applications/Claude.app
 ```bash
 NOTION_TOKEN=secret_xxx \
 GROQ_API_KEY=gsk_xxx \
+SCRAPEFORGE_BACKEND=https://scrapyforge-production.up.railway.app \
 node notion-mcp/index.js
 # Should print: [notion-mcp] ✅ Server running on stdio
 ```
+
+> ⚠️ If you run `node index.js` without env vars it will print `NOTION_TOKEN is not set` — this is expected. Claude Desktop automatically passes all tokens from `claude_desktop_config.json` when it starts the server. You never need to run it manually.
 
 **Backend not responding:**
 ```bash
 curl https://scrapyforge-production.up.railway.app/api/health
 # Should return {"ok":true}
 ```
+
+**Notion page not found error:**
+- Make sure you connected your integration to the page
+- Open Notion page → `...` → Connections → add integration
 
 ---
 

@@ -58,7 +58,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // ── CONFIG ────────────────────────────────────────────────────────────────────
 
 const NOTION_TOKEN        = process.env.NOTION_TOKEN        || "";
-const ANTHROPIC_API_KEY   = process.env.ANTHROPIC_API_KEY   || "";
+const GROQ_API_KEY        = process.env.GROQ_API_KEY        || "";
 const SCRAPEFORGE_BACKEND = process.env.SCRAPEFORGE_BACKEND || "";
 const SCRAPEFORGE_DIR     = process.env.SCRAPEFORGE_DIR
                             || path.resolve(__dirname, "..", "backend");
