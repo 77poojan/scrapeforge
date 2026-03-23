@@ -3,7 +3,6 @@
 > **One sentence in Claude Desktop → any website becomes a structured Notion database.**
 
 [![Backend Live](https://img.shields.io/badge/Backend-Live-success)](https://scrapyforge-production.up.railway.app/api/health)
-[![Docker Hub](https://img.shields.io/badge/Docker-pujanbade-blue)](https://hub.docker.com/u/pujanbade)
 [![MLH Notion AI Challenge](https://img.shields.io/badge/MLH-Notion%20AI%20Challenge-purple)](https://mlh.io)
 
 ---
