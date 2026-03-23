@@ -1,0 +1,21 @@
+# Environment
+.env
+*.env
+
+
+# Node
+node_modules/
+npm-debug.log
+
+# Docker
+.docker/
+
+# macOS
+.DS_Store
+
+# Frontend build
+frontend/dist/
+frontend/.vite/
+
+# Logs
+*.log

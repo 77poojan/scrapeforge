@@ -1,0 +1,20 @@
+{
+  "preferences": {
+    "coworkWebSearchEnabled": true,
+    "ccdScheduledTasksEnabled": false,
+    "coworkScheduledTasksEnabled": false,
+    "sidebarMode": "chat"
+  },
+  "mcpServers": {
+    "notion-mcp": {
+      "command": "node",
+      "args": ["/ABSOLUTE/PATH/TO/notion-mcp/index.js"],
+      "env": {
+        "NOTION_TOKEN": "YOUR_NOTION_TOKEN",
+        "GROQ_API_KEY": "YOUR_GROQ_KEY",
+        "SCRAPEFORGE_BACKEND": "https://scrapyforge-production.up.railway.app",
+        "DEFAULT_PAGE_ID": "YOUR_NOTION_PAGE_ID"
+      }
+    }
+  }
+}
