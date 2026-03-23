@@ -2,49 +2,52 @@
 
 > **One sentence in Claude Desktop → any website becomes a structured Notion database.**
 
-[![Backend Live](https://img.shields.io/badge/Backend-Live-success)](https://scrapyforge-production.up.railway.app/api/health)
+[![Backend Live](https://img.shields.io/badge/Backend-Live%20on%20Railway-success)](https://scrapyforge-production.up.railway.app/api/health)
+[![Docker Hub](https://img.shields.io/badge/Docker-pujanbade-blue)](https://hub.docker.com/u/pujanbade)
 [![MLH Notion AI Challenge](https://img.shields.io/badge/MLH-Notion%20AI%20Challenge-purple)](https://mlh.io)
 
 ---
 
 ## What it does
 
-You type this in Claude Desktop:
+Type this in Claude Desktop:
 
 ```
 Research "NEPSE stock market" and save to my Notion page abc123
 ```
 
-Claude automatically scrapes 3 sites, structures the data with AI, and builds this in your Notion:
+Claude scrapes 3 sites, structures everything with AI, and builds this in Notion automatically:
 
 ```
 📁 Research: NEPSE Stock Market
   ├── 1. MeroLagani    — Live stock prices, gainers, losers
   ├── 2. ShareSansar   — Market summary, indices
   └── 3. Nepal Stock   — Trading data
-📊 Summary (auto-generated)
+📊 Research Summary (auto-generated)
 ```
 
-**No manual work. No copy-pasting. Just one sentence.**
+No manual work. No copy-pasting. Just one sentence.
 
 ---
 
-## Setup (5 minutes)
+## Setup (3 steps, ~5 minutes)
 
 ### Step 1 — Get free keys
 
-| Key | Where | Looks like |
-|---|---|---|
-| Groq API (free) | https://console.groq.com → API Keys | `gsk_...` |
-| Notion Token | https://notion.so/my-integrations → New integration | `secret_...` |
+| Key | Where |
+|---|---|
+| Groq API (free) | https://console.groq.com → API Keys → Create → copy `gsk_...` |
+| Notion Token | https://notion.so/my-integrations → New integration → copy `secret_...` |
 
 **Connect Notion to your page:**
-Open any Notion page → click `...` → Connections → add your integration
+Open any Notion page → `...` → Connections → add your integration
 
-**Get your Notion Page ID** from the URL:
+**Get your Notion Page ID:**
 ```
 https://notion.so/My-Page-abc123def456  →  Page ID = abc123def456
 ```
+
+---
 
 ### Step 2 — Install MCP
 
@@ -54,13 +57,17 @@ cd scrapeforge-notion/notion-mcp
 npm install
 ```
 
-### Step 3 — Configure Claude Desktop
-
-Find your node path first:
+Find your node path:
 ```bash
 which node
-# e.g. /usr/local/bin/node or /opt/homebrew/bin/node
+# e.g. /usr/local/bin/node
+#      /opt/homebrew/bin/node
+#      /Users/name/.nvm/versions/node/v20.x.x/bin/node
 ```
+
+---
+
+### Step 3 — Configure Claude Desktop
 
 Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
@@ -68,7 +75,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 {
   "mcpServers": {
     "notion-mcp": {
-      "command": "/your/path/to/node",
+      "command": "/your/node/path/here",
       "args": ["/absolute/path/to/scrapeforge-notion/notion-mcp/index.js"],
       "env": {
         "NOTION_TOKEN": "secret_xxxx",
@@ -81,36 +88,27 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 }
 ```
 
-### Step 4 — Restart Claude Desktop and test
+Restart Claude Desktop:
+```bash
+pkill -f Claude && sleep 2 && open /Applications/Claude.app
+```
 
-Quit Claude (Cmd+Q) and reopen it. Then type:
+✅ **No Docker. No `.env` file. No local backend needed.**
 
+---
+
+## Test it
+
+Type in Claude Desktop:
 ```
 Research "AI trends 2025" and save to my Notion page YOUR_PAGE_ID
 ```
 
-Watch your Notion fill up automatically. ✅
-
-> **No Docker needed** — the backend runs live at `https://scrapyforge-production.up.railway.app`
+Watch your Notion workspace fill up automatically! 🎉
 
 ---
 
-## All 8 MCP Tools
-
-| Tool | What it does |
-|---|---|
-| ⭐ `research_assistant` | Research any topic → scrapes 3-5 sites → full Notion workspace |
-| `scrape_to_notion_page` | Deep scrape one URL (Playwright for JS sites) → Notion page |
-| `scrape_quick_to_page` | Fast scrape one URL → Notion page |
-| `scrape_to_notion_db` | Scrape URL → row in Notion database |
-| `notion_create_page` | Create a page from plain text |
-| `notion_append_blocks` | Add content to existing page |
-| `notion_query_db` | Query a Notion database |
-| `notion_get_page` | Read a Notion page |
-
----
-
-## Try these commands
+## More commands to try
 
 ```
 Research "Nepal stock market" and save to my Notion page PAGE_ID
@@ -120,40 +118,48 @@ Scrape https://quotes.toscrape.com and save all quotes to Notion page PAGE_ID
 Research "Nepal news today" and save to page PAGE_ID
 
 Scrape https://bbc.com/nepali and save headlines to Notion page PAGE_ID
+
+Show me everything in my Notion database DATABASE_ID
 ```
 
 ---
 
-## Run locally with Docker (optional)
+## MCP Tools
 
-```bash
-cp .env.example .env      # fill in your keys
-docker compose up          # pulls images from Docker Hub automatically
-```
-
-Open http://localhost:5173 for the web UI.
-
-Use `http://localhost:5050` instead of the Railway URL in your MCP config.
+| Tool | What it does |
+|---|---|
+| ⭐ `research_assistant` | Research any topic → scrapes 3-5 sites → full Notion workspace |
+| `scrape_to_notion_page` | Deep scrape with Playwright → Notion page |
+| `scrape_quick_to_page` | Fast scrape → Notion page |
+| `scrape_to_notion_db` | Scrape → row in Notion database |
+| `notion_create_page` | Plain text → new Notion page |
+| `notion_append_blocks` | Add content to existing page |
+| `notion_query_db` | Query a Notion database |
+| `notion_get_page` | Read a Notion page |
 
 ---
 
-## How it works
+## Architecture
 
 ```
-You → Claude Desktop → notion-mcp
-                            ↓
-              Railway backend (Express + Python Scrapy)
-                            ↓
-                 Playwright (for JS sites like MeroLagani)
-                            ↓
-                    Groq AI — Llama 3.3 70B
-                            ↓
-                      Notion API ✅
+You type in Claude Desktop
+        ↓ MCP protocol
+notion-mcp/index.js  (runs locally)
+        ↓ HTTP
+https://scrapyforge-production.up.railway.app
+        ↓
+Express API → Python Scrapy + Playwright
+        ↓
+Groq AI — Llama 3.3 70B (free)
+        ↓
+Notion API → pages created ✅
 ```
+
+---
 
 ## Tech Stack
 
-`Python Scrapy` · `Playwright` · `Groq AI (free)` · `Node.js MCP` · `Notion API` · `React` · `Docker` · `Railway`
+`Python Scrapy` · `Playwright` · `Groq AI (free)` · `Node.js MCP` · `Notion API` · `React` · `Railway` · `Docker`
 
 ---
 
@@ -170,16 +176,29 @@ curl https://scrapyforge-production.up.railway.app/api/health
 
 **No hammer icon in Claude Desktop:**
 ```bash
-which node                    # get your node path
-# use the FULL path in claude_desktop_config.json "command" field
+# 1. Get your full node path
+which node
+
+# 2. Use it in "command" field — not just "node"
+# Wrong:  "command": "node"
+# Right:  "command": "/usr/local/bin/node"
+
+# 3. Restart Claude Desktop
 pkill -f Claude && open /Applications/Claude.app
 ```
 
-**MCP not connecting:**
+**Test MCP manually:**
 ```bash
-# Test manually
-NOTION_TOKEN=xxx GROQ_API_KEY=xxx node notion-mcp/index.js
+NOTION_TOKEN=secret_xxx \
+GROQ_API_KEY=gsk_xxx \
+node notion-mcp/index.js
 # Should print: [notion-mcp] ✅ Server running on stdio
+```
+
+**Backend not responding:**
+```bash
+curl https://scrapyforge-production.up.railway.app/api/health
+# Should return {"ok":true}
 ```
 
 ---
